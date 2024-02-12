@@ -5,7 +5,11 @@ from django.utils import timezone
 import uuid 
 import hashlib
 
-
+GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
 class User(AbstractBaseUser, PermissionsMixin):
         id = models.AutoField(primary_key=True)
         u_id =models.UUIDField(default=uuid.uuid4, editable=False)
@@ -16,6 +20,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         date_of_birth = models.DateTimeField(blank=True,null=True)
         picture = models.ImageField(blank=True, null=True)
         phone_number = models.CharField(max_length=10,unique=True)
+        gender=models.CharField(max_length=1,choices=GENDER_CHOICES)
         address= models.CharField(max_length=100)
         date_joined = models.DateTimeField(default=timezone.now)
         last_login = models.DateTimeField(null=True)
