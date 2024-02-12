@@ -4,17 +4,21 @@ from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(BaseUserManager):
     """
-    Custom user model manager where email is the unique identifiers
+    Custom user model manager where email,phone_number is the unique identifiers
     for authentication instead of usernames.
     """
-    def create_user(self, email, password, **extra_fields):
+    def create_user(self, email,phone_number,password, **extra_fields):
         """
-        Create and save a user with the given email and password.
+        Create and save a user with the given email,phone_number and password.
         """
-        if not email:
-            raise ValueError(_("The Email must be set"))
+        values=[email,phone_number]
+        field_value_map = dict(zip(self.model.REQUIRED_FIELDS, values))
+        for field_name, value in field_value_map.items():
+            if not value:
+                raise ValueError('The {} value must be set'.format(field_name))
+
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email,phone_number=phone_number, **extra_fields)
         user.set_password(password)
         user.save()
         return user
