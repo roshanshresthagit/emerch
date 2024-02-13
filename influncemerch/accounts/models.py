@@ -42,6 +42,25 @@ class User(AbstractBaseUser, PermissionsMixin):
         def get_address(self):
                 return self.address
 
+
+class Category(models.Model):
+        name=models.CharField(max_length=64)
+
+        @staticmethod
+        def get_all_category(self):
+                return Category.objects.all()
+        
+        def __str__(self):
+                return self.name
+
+class Product(models.Model):
+        name= models.CharField(max_length=100)
+        price= models.FloatField(default=1000)
+        discounted_price = models.FloatField(blank=True, null=True)
+        category=models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+        description= models.CharField
+        image= models.ImageField()
+        
    
     
 
