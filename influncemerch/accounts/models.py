@@ -4,6 +4,8 @@ from .managers import CustomUserManager
 from django.utils import timezone
 import uuid 
 import hashlib
+from django.urls import reverse
+
 
 GENDER_CHOICES = [
         ('M', 'Male'),
@@ -22,8 +24,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         phone_number = models.CharField(max_length=10,unique=True)
         gender=models.CharField(max_length=1,choices=GENDER_CHOICES)
         address= models.CharField(max_length=100)
-        date_joined = models.DateTimeField(default=timezone.now)
         last_login = models.DateTimeField(null=True)
+        created_at = models.DateTimeField(auto_now_add=True)
+        updated_at = models.DateTimeField(auto_now=True)
+
 
         objects = CustomUserManager()
 
@@ -44,23 +48,44 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Category(models.Model):
-        name=models.CharField(max_length=64)
+        cat_id=models.AutoField(primary_key=True)
+        title=models.CharField(max_length=64)
+        description = models.CharField(max_length=100)
+        url_slug=models.CharField(max_length=255)
+        thumbnail=models.FileField()
+        created_at=models.DateTimeField(auto_now_add=True)
 
         @staticmethod
         def get_all_category(self):
                 return Category.objects.all()
         
         def __str__(self):
-                return self.name
+                return self.title
+        
+class SubCategories(models.Model):
+        id=models.AutoField(primary_key=True)
+        category_id=models.ForeignKey(Category,on_delete=models.CASCADE)
+        title=models.CharField(max_length=255)
+        url_slug=models.CharField(max_length=255)
+        thumbnail=models.FileField()
+        description=models.TextField()
+        created_at=models.DateTimeField(auto_now_add=True)
+
+        def get_absolute_url(self):
+                return reverse("sub_category_list")
 
 class Product(models.Model):
-        name= models.CharField(max_length=100)
-        price= models.FloatField(default=1000)
-        discounted_price = models.FloatField(blank=True, null=True)
-        category=models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
-        description= models.CharField
-        image= models.ImageField()
-        
+        id=models.AutoField(primary_key=True)
+        url_slug=models.CharField(max_length=255)
+        subcategories_id=models.ForeignKey(SubCategories,on_delete=models.CASCADE)
+        product_name=models.CharField(max_length=255)
+        brand=models.CharField(max_length=255)
+        product_max_price=models.CharField(max_length=255)
+        product_discount_price=models.CharField(max_length=255)
+        product_description=models.TextField()
+        product_long_description=models.TextField()
+        created_at=models.DateTimeField(auto_now_add=True)
+        in_stock_total=models.IntegerField(default=1)
    
     
 
