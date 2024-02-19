@@ -26,6 +26,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         last_login = models.DateTimeField(null=True)
         created_at = models.DateTimeField(auto_now_add=True)
         updated_at = models.DateTimeField(auto_now=True)
+        user_type_choices=((1,"Staff"),(2,"Influencer"),(3,"Customer"))
+        user_type=models.CharField(max_length=255,choices=user_type_choices,default=3)
 
 
         objects = CustomUserManager()
