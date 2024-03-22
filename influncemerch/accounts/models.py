@@ -46,4 +46,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         
         def get_address(self):
                 return self.address
+        def get_phone_number(self):
+                return self.phone_number
 
